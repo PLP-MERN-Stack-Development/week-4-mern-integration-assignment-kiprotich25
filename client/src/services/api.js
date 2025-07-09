@@ -13,8 +13,8 @@ const api = axios.create({
 // Add request interceptor for authentication
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token');
-    if (token) {
+    const token = localStorage.getItem('token');//Before every request is sent, it checks if the user has a token in localStorage.
+    if (token) {//If yes, it adds it to the request's headers as Authorization: Bearer token
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
@@ -29,10 +29,11 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     // Handle authentication errors
-    if (error.response && error.response.status === 401) {
-      localStorage.removeItem('token');
+    if (error.response && error.response.status === 401) {//Catches backend errors (especially 401 Unauthorized)
+      localStorage.removeItem('token');//Clears the user's token and info from localStorage
       localStorage.removeItem('user');
-      window.location.href = '/login';
+      window.location.href = '/login';//Redirects user to the /login page
+      
     }
     return Promise.reject(error);
   }
@@ -42,11 +43,12 @@ api.interceptors.response.use(
 export const postService = {
   // Get all posts with optional pagination and filters
   getAllPosts: async (page = 1, limit = 10, category = null) => {
-    let url = `/posts?page=${page}&limit=${limit}`;
+    let url = `/posts?page=${page}&limit=${limit}`;  // This creates the base API request URL.
     if (category) {
       url += `&category=${category}`;
     }
     const response = await api.get(url);
+    //Sends a GET request to the built URL//Waits for the response to come back
     return response.data;
   },
 
@@ -105,8 +107,8 @@ export const categoryService = {
 // Auth API services
 export const authService = {
   // Register a new user
-  register: async (userData) => {
-    const response = await api.post('/auth/register', userData);
+  signup: async (userData) => {
+    const response = await api.post('/auth/signup', userData);
     return response.data;
   },
 
@@ -115,7 +117,7 @@ export const authService = {
     const response = await api.post('/auth/login', credentials);
     if (response.data.token) {
       localStorage.setItem('token', response.data.token);
-      localStorage.setItem('user', JSON.stringify(response.data.user));
+      localStorage.setItem('user', JSON.stringify(response.data.user));//Sends login credentials to the server.If successful, saves the token and user info in localStorage.
     }
     return response.data;
   },
@@ -127,10 +129,21 @@ export const authService = {
   },
 
   // Get current user
-  getCurrentUser: () => {
-    const user = localStorage.getItem('user');
-    return user ? JSON.parse(user) : null;
-  },
+  // getCurrentUser: () => {
+  //   const user = localStorage.getItem('user');
+  //   return user ? JSON.parse(user) : null;
+  // },
+   getCurrentUser: () => {
+   try {
+     const user = localStorage.getItem('user');
+     if (!user) return null;
+     return JSON.parse(user);
+  } catch (err) {
+    console.error('Failed to parse user from localStorage', err);
+    return null;
+  }
+}
+
 };
 
 export default api; 

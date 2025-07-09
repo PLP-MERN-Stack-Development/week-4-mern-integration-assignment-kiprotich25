@@ -23,7 +23,7 @@ Build a full-stack MERN (MongoDB, Express.js, React.js, Node.js) application tha
   - `POST /api/categories`: Create a new category
 - Create Mongoose models for `Post` and `Category` with proper relationships
 - Implement input validation using a library like Joi or express-validator
-- Add error handling middleware for API routes
+- Add error handling middleware for API routes///////not yet
 
 ### Task 3: Front-End Development
 - Create React components for:
