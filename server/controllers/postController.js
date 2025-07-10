@@ -1,4 +1,5 @@
 const Post = require ('../models/Post')
+const jwt = require("jsonwebtoken")
 
 exports.getPosts = async (req, res, next)=> {
     try {
@@ -39,15 +40,26 @@ exports.updatePost = async (req, res) => {
         res.status(400).json({message: error.message})
     }
 }
-exports.createPost = async (req, res, next) =>{
-    try {
-        const post = new Post(req.body);
-        await post.save();
-        res.status(201).json(post);
-    }
-    catch (error){
-        next(error)
-    }
+exports.createPost = async (req, res, next) => {
+  try {
+    // 1. Get token from header
+    const authHeader = req.headers.authorization;
+    if (!authHeader) return res.status(401).json({ message: "No token provided" });
+
+    const token = authHeader.split(" ")[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    // 2. Attach author ID to post
+    const newPost = new Post({
+      ...req.body,
+      author: decoded.id, // ✅ set author from token
+    });
+
+    await newPost.save();
+    res.status(201).json(newPost);
+  } catch (error) {
+    next(error);
+  }
 };
 exports.deletePost = async (req, res, next )=>{
     try {

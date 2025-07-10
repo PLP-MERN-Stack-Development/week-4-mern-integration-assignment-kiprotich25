@@ -8,7 +8,7 @@ export default function PostList ({ posts }) {
                 <Card key={post._id}>
                     <CardContent className="p-4">
                         <h2 className="text-xl font-semibold">{post.title}</h2>
-                        <p className="text-muted-foreground">{post.excerpt}</p>
+                        <p className="text-muted-foreground">{post.content}</p>
                         <Link to={`/posts/${post._id}`} className="text-blue-600 text-sm underline">Read more</Link>
 
                     </CardContent>

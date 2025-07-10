@@ -128,21 +128,32 @@ export const authService = {
     localStorage.removeItem('user');
   },
 
-  // Get current user
-  // getCurrentUser: () => {
-  //   const user = localStorage.getItem('user');
-  //   return user ? JSON.parse(user) : null;
-  // },
-   getCurrentUser: () => {
-   try {
-     const user = localStorage.getItem('user');
-     if (!user) return null;
-     return JSON.parse(user);
-  } catch (err) {
-    console.error('Failed to parse user from localStorage', err);
-    return null;
-  }
-}
+ 
+  getCurrentUser: () => {
+    try {
+      const user = localStorage.getItem("user");
+      // If not found or is "undefined", treat it as null
+      if (!user || user === "undefined") return null;
+      return JSON.parse(user);
+    } catch (error) {
+      console.error("Failed to parse user from localStorage:", error);
+      return null;
+    }
+  },
+  // other methods...
+
+
+//    getCurrentUser: () => {
+//    try {
+//      const user = localStorage.getItem('user');
+//      if (!user) return null;
+//      return JSON.parse(user);
+//   } catch (err) {
+//     console.error('Failed to parse user from localStorage', err);
+//     return null;
+//   }
+  
+// }
 
 };
 

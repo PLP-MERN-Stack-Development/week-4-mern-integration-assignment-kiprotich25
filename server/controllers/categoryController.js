@@ -1,8 +1,8 @@
-const Category = require ('../models/Categories');
+const Category = require ('../models/Category');
 
 exports.getCategories = async (req, res, next ) => {
     try {
-        const categories = Category.find()
+        const categories = await Category.find()
         res.json(categories)
         
     } catch (error) {
@@ -21,8 +21,9 @@ exports.createCategory = async (req, res, next ) => {
         if (error.code === 11000) {
             return res.status(400).json({message: "CAtegory already exists"});
 
-            next(error)
+           
         }
+        next(error)
         
     }
 }
